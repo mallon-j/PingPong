@@ -10,6 +10,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import Model.*;
 
+/**
+ * The GameView class represents the visual representation of the game.
+ */
 public class GameView {
     @SuppressWarnings("unused")
     private Group root;
@@ -19,6 +22,12 @@ public class GameView {
     private Label goalLabel;
     private Button pauseButton;
 
+    /**
+     * Constructs a GameView object with the specified root group and game.
+     *
+     * @param root The root group of the scene
+     * @param game The game model
+     */
     public GameView(Group root, Game game) {
         this.root = root;
         this.game = game;
@@ -29,6 +38,9 @@ public class GameView {
         root.getChildren().addAll(canvas, goalLabel, pauseButton);
     }
 
+    /**
+     * Initializes the goal label.
+     */
     private void initializeGoalLabel() {
         goalLabel = new Label();
         goalLabel.setFont(new Font("Arial", 18));
@@ -38,6 +50,11 @@ public class GameView {
         goalLabel.setVisible(false);
     }
 
+    /**
+     * Displays a goal message indicating which player scored.
+     *
+     * @param playerName The name of the player who scored
+     */
     public void displayGoalMessage(String playerName) {
         Platform.runLater(() -> {
             goalLabel.setText("Goal " + playerName);
@@ -55,6 +72,9 @@ public class GameView {
         });
     }
 
+    /**
+     * Initializes the pause button.
+     */
     private void initializePauseButton() {
         pauseButton = new Button("Pause");
         pauseButton.setLayoutX(game.getGAME_WIDTH()/2 - 50);
@@ -77,6 +97,9 @@ public class GameView {
         });
     }
 
+    /**
+     * Draws the game components on the canvas.
+     */
     public void drawGame() {
         Platform.runLater(() -> {
             clearCanvas();
@@ -86,10 +109,16 @@ public class GameView {
         });
     }
 
+    /**
+     * Clears the canvas.
+     */
     private void clearCanvas() {
         gc.clearRect(0, 0, game.getGAME_WIDTH(), game.getGAME_HEIGHT());
     }
 
+    /**
+     * Draws player labels showing their scores.
+     */
     private void drawPlayerLabels() {
         gc.setFont(new Font("Arial", 18));
         gc.setFill(Color.WHITE);
@@ -97,6 +126,12 @@ public class GameView {
         gc.fillText(game.getPlayer2Name() + ": " + game.getPlayer2Score(), game.getGAME_WIDTH() - 160, 30);
     }
 
+    /**
+     * Resizes the canvas to the specified width and height.
+     *
+     * @param width  The new width of the canvas
+     * @param height The new height of the canvas
+     */
     public void resizeCanvas(double width, double height) {
         canvas.setWidth(width);
         canvas.setHeight(height);
@@ -104,6 +139,9 @@ public class GameView {
         game.setGameHeight(height);
     }
 
+    /**
+     * Draws the rackets on the canvas.
+     */
     private void drawRackets() {
         gc.setFill(Color.BLUE);
         gc.fillRect(game.getRacket1().getX(), game.getRacket1().getY(), game.getRacket1().getWidth(),
@@ -112,6 +150,9 @@ public class GameView {
                 game.getRacket2().getHeight());
     }
 
+    /**
+     * Draws the ball on the canvas.
+     */
     private void drawBall() {
         gc.setFill(Color.RED);
         gc.fillOval(game.getBall().getCenterX(), game.getBall().getCenterY(), game.getBall().getRadius(),

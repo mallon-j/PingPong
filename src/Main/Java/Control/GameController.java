@@ -1,15 +1,19 @@
 package Control;
+
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import Model.*;
 import View.*;
 
+/**
+ * The GameController class controls the flow of the game, including managing
+ * scenes, game loop, and handling events.
+ */
 public class GameController {
     private Game game;
     private GameView gameView;
@@ -19,6 +23,15 @@ public class GameController {
     private GameMenu gameMenu;
     private Stage stage;
 
+    /**
+     * Constructs a GameController object with the specified stage, game, menu
+     * scene, and game menu.
+     *
+     * @param stage     The primary stage of the application
+     * @param game      The game model
+     * @param menuScene The scene for the main menu
+     * @param gameMenu  The game menu view
+     */
     public GameController(Stage stage, Game game, Scene menuScene, GameMenu gameMenu) {
         this.game = game;
         this.menuScene = menuScene;
@@ -47,31 +60,57 @@ public class GameController {
             gameView.drawGame();
         });
         this.ballManager = new BallManager(game, gameView);
-        
-        
     }
 
+    /**
+     * Resizes the game components based on the width and height factors.
+     *
+     * @param widthFactor  The factor by which the width is scaled
+     * @param heightFactor The factor by which the height is scaled
+     * @param stage        The primary stage
+     */
     public void resizeGame(double widthFactor, double heightFactor, Stage stage) {
         resizeX(widthFactor);
         resizeY(heightFactor);
         game.setGameWidth(stage.getWidth());
         game.setGameHeight(stage.getHeight());
         gameView.resizeCanvas(widthFactor, heightFactor);
-    
     }
 
+    /**
+     * Resizes the game components along the X-axis based on the given factor.
+     *
+     * @param factor The factor by which the X-axis is scaled
+     */
     public void resizeX(double factor) {
         game.getRacket1().resizeX(factor);
         game.getRacket2().resizeX(factor);
         game.getBall().resizeX(factor);
     }
 
+    /**
+     * Resizes the game components along the Y-axis based on the given factor.
+     *
+     * @param factor The factor by which the Y-axis is scaled
+     */
     public void resizeY(double factor) {
         game.getRacket1().resizeY(factor);
         game.getRacket2().resizeY(factor);
         game.getBall().resizeY(factor);
     }
 
+    /**
+     * Initiates the game loop and the ball manager thread.
+     */
+    public void startGame() {
+        Thread thread = new Thread(ballManager);
+        thread.start();
+        new Thread(this::gameLoop).start();
+    }
+
+    /**
+     * The main game loop responsible for updating the game state.
+     */
     private void gameLoop() {
         while (true) {
             if (!game.isPaused()) {
@@ -88,13 +127,11 @@ public class GameController {
             }
         }
     }
-    public void startGame(){
-        Thread thread = new Thread(ballManager);
-        thread.start();
-        new Thread(this::gameLoop).start();
-    }
 
-
+    /**
+     * Checks if there is a winner in the game based on the score limit.
+     * If a winner is found, ends the game.
+     */
     private void checkForWinner() {
         if (game.getPlayer1Score() >= game.getScoreLimit()) {
             endGame(game.getPlayer1());
@@ -107,24 +144,32 @@ public class GameController {
         }
     }
 
-    private void restartGame(){
+    /**
+     * Restarts the game when requested.
+     */
+    private void restartGame() {
         game.restartGame();
         game.resume();
     }
 
+    /**
+     * Ends the game, displays an alert dialog indicating the winner, and provides
+     * options to restart or return to the main menu.
+     *
+     * @param winner The player who won the game
+     */
     private void endGame(Player winner) {
         game.pause();
         Platform.runLater(() -> {
-            Alert alert = new Alert(AlertType.NONE);
+            Alert alert = new Alert(Alert.AlertType.NONE);
             alert.setTitle("Game Over");
             alert.setHeaderText(null);
             alert.setContentText("Game Over! " + winner.getName() + " wins!");
-    
+
             // Create the buttons
             ButtonType restartButton = new ButtonType("Restart Game");
             ButtonType mainMenuButton = new ButtonType("Switch to Main Menu");
             alert.getButtonTypes().setAll(restartButton, mainMenuButton);
-    
             // Handle button click events
             alert.setOnCloseRequest(e -> {
                 if (alert.getResult() == restartButton) {
@@ -133,15 +178,17 @@ public class GameController {
                     switchToMainMenu();
                 }
             });
-    
+
             alert.showAndWait();
         });
     }
+
+    /**
+     * Switches the scene to the main menu.
+     */
     private void switchToMainMenu() {
         System.out.println("Switching to Main Menu...");
         System.out.println("Menu Scene Root: " + menuScene.getRoot());
         stage.setScene(menuScene);
-        //setupGameMenu();
     }
-
 }

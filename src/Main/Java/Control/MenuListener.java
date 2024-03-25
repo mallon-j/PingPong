@@ -1,4 +1,5 @@
 package Control;
+
 import Model.*;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -8,25 +9,42 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * The MenuListener class handles actions triggered by menu items in the game menu.
+ */
 public class MenuListener {
     private Game game;
-    public MenuListener(Game game){
-        this.game=game;
+
+    /**
+     * Constructs a MenuListener object with the specified game.
+     *
+     * @param game The game model
+     */
+    public MenuListener(Game game) {
+        this.game = game;
     }
 
+    /**
+     * Exits the application.
+     */
     public void setExit() {
         Platform.exit();
     }
 
+    /**
+     * Displays information about the game.
+     */
     public void setAbout() {
-        var alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Super Ping pong");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Super Ping Pong");
         alert.setHeaderText("Developed By James Mallon");
-        alert.setContentText("All rights resereved");
+        alert.setContentText("All rights reserved");
         alert.showAndWait().ifPresent((btnType) -> {});
     }
-    
+
+    /**
+     * Sets the name of Player 1.
+     */
     public void setPlayer1Name() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Set Player 1 Name");
@@ -40,6 +58,9 @@ public class MenuListener {
         });
     }
 
+    /**
+     * Sets the name of Player 2.
+     */
     public void setPlayer2Name() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Set Player 2 Name");
@@ -53,6 +74,9 @@ public class MenuListener {
         });
     }
 
+    /**
+     * Sets the score limit for the game.
+     */
     public void setScoreLimit() {
         List<Integer> scoreOptions = Arrays.asList(10, 15, 20);
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(null, scoreOptions);
@@ -67,12 +91,15 @@ public class MenuListener {
         });
     }
 
-    public void setRacketSize(){
+    /**
+     * Sets the size of the rackets.
+     */
+    public void setRacketSize() {
         List<String> racketOptions = Arrays.asList("Small", "Medium", "Large");
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("M", racketOptions);
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Medium", racketOptions);
         dialog.setTitle("Set Racket Size");
         dialog.setHeaderText(null);
-        dialog.setContentText("Choose Racket:");
+        dialog.setContentText("Choose Racket Size:");
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(racketSize -> {
@@ -81,12 +108,15 @@ public class MenuListener {
         });
     }
 
-    public void setBallSpeed(){
+    /**
+     * Sets the speed of the ball.
+     */
+    public void setBallSpeed() {
         List<String> speedOptions = Arrays.asList("Slow", "Medium", "Fast");
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Medium", speedOptions);
         dialog.setTitle("Set Ball Speed");
         dialog.setHeaderText(null);
-        dialog.setContentText("Choose Speed:");
+        dialog.setContentText("Choose Ball Speed:");
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(ballSpeed -> {
@@ -94,7 +124,4 @@ public class MenuListener {
             System.out.println("Ball speed set to: " + ballSpeed);
         });
     }
-
-
-
 }
