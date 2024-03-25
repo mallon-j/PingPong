@@ -46,4 +46,8 @@ public class Racket extends Rectangle implements Resizable {
         setY(newY);
         setHeight(newHeight);
     }
+
+    public void setSpeed(double speed){
+        this.speed = speed;
+    }
 }

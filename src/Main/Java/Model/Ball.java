@@ -75,4 +75,8 @@ public class Ball extends Circle implements Resizable {
     public void incrementSpeed(){
         this.speed += speedIncrement;
     }
+
+    public double getXVelocity(){
+        return xVelocity;
+    }
 }
