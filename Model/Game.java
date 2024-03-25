@@ -8,7 +8,7 @@ public class Game {
     private String player1Name = "Player 1";
     private String player2Name = "Player 2";
     
-    private double paddleWidth = 20;
+    private double paddleWidth = 15;
     private double paddleHeight = 80;
 
     private int ballSpeed = 2;

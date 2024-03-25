@@ -1,11 +1,12 @@
 package View;
 
-import Control.*;
+import Control.MenuListener;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import Control.*;
 
 public class GameMenu {
     private MenuBar menuBar;

@@ -9,6 +9,16 @@ public class BallManager implements Runnable{
         this.game=c;
         this.gameView=gameView;
     }
+
+    public boolean player2Scores(Game game) {
+        return game.getBall().getCenterX() < 10;
+    }
+
+    // Method to check the end of the game
+    public boolean checkEndOfGame(Game game) {
+        int maxScore = Math.max(game.getPlayer1().getScore(), game.getPlayer2().getScore());
+        return game.getScoreLimit() <= maxScore;
+    }
     @Override
     public void run() {
         Ball ball = game.getBall();
@@ -31,17 +41,23 @@ public class BallManager implements Runnable{
             if(!game.isPaused()){
                 ball.move(game.getGAME_HEIGHT());
 
-                if (ball.intersects(racket1.getBoundsInLocal())) {
+                double distX1 = Math.abs(ball.getCenterX() - (racket1.getX() + racket1.getWidth() / 2));
+                double distY1 = Math.abs(ball.getCenterY() - (racket1.getY() + racket1.getHeight() / 2));
+                double distX2 = Math.abs(ball.getCenterX() - racket2.getX());
+                double distY2 = Math.abs(ball.getCenterY() - (racket2.getY() + racket2.getHeight() / 2));
+
+                // Check if the distances are less than the sum of the radii
+                if (distX1 <= (racket1.getWidth() / 2) && distY1 <= (racket1.getHeight() / 2)) {
                     ball.reverseXDirection();
-                 //   ball.incrementSpeed();
+                    ball.incrementSpeed();
                 }
 
-                if (ball.intersects(racket2.getBoundsInLocal())) {
+                if (distX2 <= (racket2.getWidth()) && distY2 <= (racket2.getHeight() / 2)) {
                     ball.reverseXDirection();
-                   // ball.incrementSpeed();
+                    ball.incrementSpeed();
                 }
 
-                if (ball.getCenterX() == 0) {
+                if (ball.getCenterX() <=  0) {
                     player2.incrementScore();
                     gameView.displayGoalMessage(player2.getName());
                     ball.setBallSpeed(initialSpeed);

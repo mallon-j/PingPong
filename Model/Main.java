@@ -3,6 +3,8 @@ package Model;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import Control.*;
+import Control.GameController;
+import Control.MenuListener;
 import View.*;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
