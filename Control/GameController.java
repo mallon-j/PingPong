@@ -15,9 +15,15 @@ public class GameController {
     private GameView gameView;
     private BallManager ballManager;
     private KeyboardListener keyboardListener;
+    private Scene menuScene;
+    private GameMenu gameMenu;
+    private Stage stage;
 
-    public GameController(Stage stage, Game game) {
+    public GameController(Stage stage, Game game, Scene menuScene, GameMenu gameMenu) {
         this.game = game;
+        this.menuScene = menuScene;
+        this.gameMenu = gameMenu;
+        this.stage = stage;
         Group root = new Group();
         this.gameView = new GameView(root, game);
         Scene scene = new Scene(root, game.getGAME_WIDTH(), game.getGAME_HEIGHT(), Color.BLACK);
@@ -114,19 +120,28 @@ public class GameController {
             alert.setHeaderText(null);
             alert.setContentText("Game Over! " + winner.getName() + " wins!");
     
-            // Create the button
-            ButtonType restartButton = new ButtonType("Return to Main Menu");
-            alert.getButtonTypes().setAll(restartButton);
+            // Create the buttons
+            ButtonType restartButton = new ButtonType("Restart Game");
+            ButtonType mainMenuButton = new ButtonType("Switch to Main Menu");
+            alert.getButtonTypes().setAll(restartButton, mainMenuButton);
     
-            // Handle button click event
+            // Handle button click events
             alert.setOnCloseRequest(e -> {
                 if (alert.getResult() == restartButton) {
-                    restartGame();;
+                    restartGame();
+                } else if (alert.getResult() == mainMenuButton) {
+                    switchToMainMenu();
                 }
             });
     
             alert.showAndWait();
         });
+    }
+    private void switchToMainMenu() {
+        System.out.println("Switching to Main Menu...");
+        System.out.println("Menu Scene Root: " + menuScene.getRoot());
+        stage.setScene(menuScene);
+        //setupGameMenu();
     }
 
 }

@@ -29,8 +29,9 @@ public class Main extends Application {
 
         gameMenu.getStartButton().setOnAction(event -> {
             game.instantiateGame();
-            GameController gameController = new GameController(stage, game);
+            GameController gameController = new GameController(stage, game, menuScene, gameMenu);
             gameController.startGame();
+            game.resume();
         });
         
     }
