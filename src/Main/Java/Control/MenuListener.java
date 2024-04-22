@@ -124,4 +124,23 @@ public class MenuListener {
             System.out.println("Ball speed set to: " + ballSpeed);
         });
     }
+
+    public void setSerializeGame() {
+        TextInputDialog dialog = new TextInputDialog("game");
+        dialog.setTitle("Save Game");
+        dialog.setHeaderText("Enter a name for the saved game:");
+        dialog.setContentText("Name:");
+    
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            String fileName = result.get() + ".ser";
+            GameSerializer.getInstance().serialize(game, fileName);
+        }
+    }
+
+    public void setDeserializeGame() {
+        
+    
+        
+    }
 }

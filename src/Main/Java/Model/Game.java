@@ -1,12 +1,14 @@
 package Model;
 
+import java.io.Serializable;
+
 /**
  * The Game class represents a game environment with its properties and functionalities.
  */
-public class Game {
+public class Game implements Serializable{
     private double GAME_WIDTH = 600; // The width of the game area
     private double GAME_HEIGHT = 400; // The height of the game area
-    private int scoreLimit = 3; // The score limit of the game
+    private int scoreLimit = 10; // The score limit of the game
     
     private String player1Name = "Player 1"; // The name of player 1
     private String player2Name = "Player 2"; // The name of player 2
@@ -26,6 +28,7 @@ public class Game {
     private Ball ball; // Ball object
 
     private Boolean paused = false; // Flag to indicate if the game is paused
+    
 
 
     // Constructor

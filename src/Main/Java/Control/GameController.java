@@ -5,8 +5,12 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.util.Optional;
+
 import Model.*;
 import View.*;
 
@@ -22,6 +26,7 @@ public class GameController {
     private Scene menuScene;
     private GameMenu gameMenu;
     private Stage stage;
+    
 
     /**
      * Constructs a GameController object with the specified stage, game, menu
@@ -38,9 +43,10 @@ public class GameController {
         this.gameMenu = gameMenu;
         this.stage = stage;
         Group root = new Group();
-        this.gameView = new GameView(root, game);
-        Scene scene = new Scene(root, game.getGAME_WIDTH(), game.getGAME_HEIGHT(), Color.BLACK);
         this.keyboardListener = new KeyboardListener(game);
+        this.gameView = new GameView(root, game, this);
+        Scene scene = new Scene(root, game.getGAME_WIDTH(), game.getGAME_HEIGHT(), Color.BLACK);
+        
         scene.setOnKeyPressed(keyboardListener);
         scene.setOnKeyReleased(keyboardListener);
         stage.setScene(scene);
@@ -106,6 +112,8 @@ public class GameController {
         Thread thread = new Thread(ballManager);
         thread.start();
         new Thread(this::gameLoop).start();
+        game.pause();
+        
     }
 
     /**
@@ -114,11 +122,14 @@ public class GameController {
     private void gameLoop() {
         while (true) {
             if (!game.isPaused()) {
+                Platform.runLater(() -> gameView.getGameMenu().hideGameMenu());
                 keyboardListener.updateRacketPositions();
                 Platform.runLater(() -> {
                     gameView.drawGame();
                     checkForWinner(); // Check if there's a winner
                 });
+            } else {
+                Platform.runLater(() -> gameView.getGameMenu().showGameMenu());
             }
             try {
                 Thread.sleep(1000 / 60);
@@ -191,4 +202,47 @@ public class GameController {
         System.out.println("Menu Scene Root: " + menuScene.getRoot());
         stage.setScene(menuScene);
     }
+
+    public void loadGame() {
+
+        TextInputDialog dialog = new TextInputDialog("game");
+        dialog.setTitle("Load Game");
+        dialog.setHeaderText("Enter the name of the saved game:");
+        dialog.setContentText("Name:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String fileName = result.get() + ".ser";
+            Game loadedGame = GameSerializer.getInstance().deserialize(fileName);
+            if (loadedGame == null) {
+                System.out.println("Deserialization failed");
+                return;
+            }
+
+            // Deserialize the game object
+
+            // Update the game and gameView to reference the new game object
+            this.game = loadedGame;
+            this.gameView.setGame(loadedGame);
+
+            // Update the keyboardListener to reference the new game object
+            this.keyboardListener.setGame(loadedGame);
+
+            this.keyboardListener.reset();
+
+            // Update the ballManager to reference the new game object
+            this.ballManager.setGame(loadedGame);
+
+            this.gameView.resetView();
+    
+            game.getRacket1().printSpeed();
+
+            // Redraw the game
+            this.gameView.drawGame();
+            game.resume();
+            startGame();
+        }
+    }
+
+    
 }

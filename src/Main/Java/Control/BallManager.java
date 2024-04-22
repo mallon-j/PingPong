@@ -113,4 +113,8 @@ public class BallManager implements Runnable {
             }
         }
     }
+
+    public void setGame(Game loadedGame) {
+        this.game = loadedGame;
+    }
 }

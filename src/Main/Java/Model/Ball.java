@@ -1,12 +1,17 @@
 package Model;
 
 import javafx.scene.shape.Circle;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  * The Ball class represents a ball object in the game.
  */
-public class Ball extends Circle implements Resizable {
+public class Ball extends Circle implements Resizable, Serializable {
     private double speed; // The speed of the ball
     private Random random; // Random object for generating random directions
     private int xVelocity; // The velocity of the ball along the x-axis
@@ -128,5 +133,22 @@ public class Ball extends Circle implements Resizable {
      */
     public double getXVelocity(){
         return xVelocity;
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        oos.writeDouble(getCenterX());
+        oos.writeDouble(getCenterY());
+        oos.writeDouble(getRadius());
+    }
+    
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        double centerX = ois.readDouble();
+        double centerY = ois.readDouble();
+        double radius = ois.readDouble();
+        setCenterX(centerX);
+        setCenterY(centerY);
+        setRadius(radius);
     }
 }

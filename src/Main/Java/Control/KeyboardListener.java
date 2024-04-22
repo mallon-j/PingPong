@@ -14,6 +14,7 @@ public class KeyboardListener implements EventHandler<KeyEvent> {
     private boolean isDownPressed = false;
     private boolean isAPressed = false;
     private boolean isZPressed = false;
+    private boolean isSpacePressed = false;
 
     /**
      * Constructs a KeyboardListener object with the specified game.
@@ -40,6 +41,17 @@ public class KeyboardListener implements EventHandler<KeyEvent> {
             isAPressed = keyEvent.getEventType() == KeyEvent.KEY_PRESSED;
         } else if (keyCode == KeyCode.Z) {
             isZPressed = keyEvent.getEventType() == KeyEvent.KEY_PRESSED;
+        } else if (keyCode == KeyCode.SPACE) {
+            if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED && !isSpacePressed) {
+                isSpacePressed = true;
+                if (game.isPaused()) {
+                    game.resume();
+                } else {
+                    game.pause();
+                }
+            } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
+                isSpacePressed = false;
+            }
         }
     }
 
@@ -61,5 +73,16 @@ public class KeyboardListener implements EventHandler<KeyEvent> {
         } else if (isDownPressed) {
             racket2.moveDown(game.getGAME_HEIGHT());
         }
+    }
+
+    public void setGame(Game loadedGame) {
+        this.game = loadedGame; 
+    }
+
+    public void reset(){
+        isUpPressed = false;
+    isDownPressed = false;
+    isAPressed = false;
+    isZPressed = false;
     }
 }

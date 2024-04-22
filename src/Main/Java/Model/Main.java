@@ -69,7 +69,7 @@ public class Main extends Application {
             // Start the game
             gameController.startGame();
             // Resume the game
-            game.resume();
+           // game.resume();
         });
     }
 }

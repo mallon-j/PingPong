@@ -1,9 +1,11 @@
 package Model;
 
+import java.io.Serializable;
+
 /**
  * The Player class represents a player in a game.
  */
-public class Player {
+public class Player implements Serializable {
     private String name; // The name of the player
     private int score = 0; // The score of the player
 

@@ -1,11 +1,16 @@
 package Model;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import javafx.scene.shape.Rectangle;
 
 /**
  * The Racket class represents a game racket that extends Rectangle and implements Resizable.
  */
-public class Racket extends Rectangle implements Resizable {
+public class Racket extends Rectangle implements Resizable, Serializable {
     private double speed; // The speed of the racket
 
     /**
@@ -84,4 +89,29 @@ public class Racket extends Rectangle implements Resizable {
     public void setSpeed(double speed){
         this.speed = speed;
     }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeDouble(getX());
+        out.writeDouble(getY());
+        out.writeDouble(getWidth());
+        out.writeDouble(getHeight());
+        out.writeDouble(speed);
+    }
+    
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        setX(in.readDouble());
+        setY(in.readDouble());
+        setWidth(in.readDouble());
+        setHeight(in.readDouble());
+        speed = in.readDouble();
+    }
+
+
+    public void printSpeed(){
+        System.out.println(speed);
+    }
+
+
 }

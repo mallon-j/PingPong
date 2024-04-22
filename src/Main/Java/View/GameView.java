@@ -8,6 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import Control.GameController;
+import Control.KeyboardListener;
 import Model.*;
 
 /**
@@ -21,21 +23,30 @@ public class GameView {
     private GraphicsContext gc;
     private Label goalLabel;
     private Button pauseButton;
+    private inGameMenu gameMenu;
+    private Label pauseLabel;
+    
 
     /**
      * Constructs a GameView object with the specified root group and game.
      *
-     * @param root The root group of the scene
+     * @param root T
+     * he root group of the scene
      * @param game The game model
      */
-    public GameView(Group root, Game game) {
+    public GameView(Group root, Game game, GameController gameController) {
         this.root = root;
         this.game = game;
+        this.gameMenu = new inGameMenu(game, gameController);
+        System.out.println(gameMenu.getRoot());
         canvas = new Canvas(game.getGAME_WIDTH(), game.getGAME_HEIGHT());
         gc = canvas.getGraphicsContext2D();
         initializeGoalLabel();
-        initializePauseButton();
-        root.getChildren().addAll(canvas, goalLabel, pauseButton);
+       // initializePauseButton();
+        initializePauseLabel();
+        root.getChildren().addAll(canvas, goalLabel, pauseLabel);
+        root.getChildren().add(gameMenu.getRoot());
+        gameMenu.hideGameMenu();
     }
 
     /**
@@ -48,6 +59,15 @@ public class GameView {
         goalLabel.setLayoutX(game.getGAME_WIDTH() / 2 - 50);
         goalLabel.setLayoutY(20);
         goalLabel.setVisible(false);
+    }
+
+    private void initializePauseLabel() {
+        pauseLabel = new Label("Press space to pause");
+        pauseLabel.setFont(new Font("Arial", 18));
+        pauseLabel.setTextFill(Color.WHITE);
+        pauseLabel.setOpacity(0.5); // Set the opacity to make the label feint
+        pauseLabel.setLayoutX(game.getGAME_WIDTH() / 2 - 100);
+        pauseLabel.setLayoutY(game.getGAME_HEIGHT() - 50);
     }
 
     /**
@@ -89,9 +109,11 @@ public class GameView {
         pauseButton.setOnAction(event -> {
             if (game.isPaused()) {
                 game.resume();
+                gameMenu.hideGameMenu();
                 pauseButton.setText("Pause");
             } else {
                 game.pause();
+                gameMenu.showGameMenu();
                 pauseButton.setText("Resume");
             }
         });
@@ -106,6 +128,14 @@ public class GameView {
             drawPlayerLabels();
             drawRackets();
             drawBall();
+            if(game.isPaused()){
+                pauseLabel.setVisible(false);
+                gameMenu.showGameMenu();
+           }
+           if(!game.isPaused()){
+                pauseLabel.setVisible(true);
+                gameMenu.hideGameMenu();
+           }
         });
     }
 
@@ -143,11 +173,13 @@ public class GameView {
      * Draws the rackets on the canvas.
      */
     private void drawRackets() {
+
         gc.setFill(Color.BLUE);
         gc.fillRect(game.getRacket1().getX(), game.getRacket1().getY(), game.getRacket1().getWidth(),
                 game.getRacket1().getHeight());
         gc.fillRect(game.getRacket2().getX(), game.getRacket2().getY(), game.getRacket2().getWidth(),
                 game.getRacket2().getHeight());
+                
     }
 
     /**
@@ -158,4 +190,22 @@ public class GameView {
         gc.fillOval(game.getBall().getCenterX(), game.getBall().getCenterY(), game.getBall().getRadius(),
                 game.getBall().getRadius());
     }
+
+    public void setGame(Game loadedGame) {
+        this.game = loadedGame;
+    }
+
+
+    public void resetView(){
+        clearCanvas();
+
+    }
+
+    public inGameMenu getGameMenu(){
+        return this.gameMenu;
+    }
+    
+
+    
+
 }
